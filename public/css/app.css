@@ -380,6 +380,11 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 16px 40px rgba(0, 0, 0, .85);
   -webkit-touch-callout: default; user-select: auto; -webkit-user-select: auto;
 }
+.btn-external {
+  margin-top: 16px; min-height: 50px; padding: 0 22px; border-radius: 999px;
+  font-size: var(--fs-body); font-weight: 600; letter-spacing: .04em; text-decoration: none;
+}
+.btn-external[hidden] { display: none; }
 .btn-close-modal {
   margin-top: 16px; padding: 12px 30px; border-radius: 999px;
   border: 1px solid rgba(255, 253, 247, .38);

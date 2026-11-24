@@ -1,9 +1,9 @@
 # Cloudflare Pages 設定（本機開發與 wrangler 部署用）
-name = "2027-new-year"
+name = "deepwater-2027"
 pages_build_output_dir = "public"
 compatibility_date = "2026-11-01"
 
 # 前台開關存放的 KV。到後台建立 namespace 後，把 id 換成你的。
 [[kv_namespaces]]
 binding = "SETTINGS"
-id = "b343634446724d17ae5dfe1d0ca53557"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"

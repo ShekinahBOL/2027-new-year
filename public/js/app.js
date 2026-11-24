@@ -24,7 +24,7 @@
     verseText: $('verseText'), verseRef: $('verseRef'),
     save: $('btnSave'), share: $('btnShare'), copy: $('btnCopy'), replay: $('btnReplay'),
     closedMessage: $('closedMessage'),
-    modal: $('saveModal'), modalHint: $('saveHint'), modalFrame: $('saveFrame'), modalClose: $('btnCloseModal')
+    modal: $('saveModal'), modalHint: $('saveHint'), modalFrame: $('saveFrame'), external: $('btnExternal'), modalClose: $('btnCloseModal')
   };
 
   var state = {
@@ -376,6 +376,12 @@
       var lhgt = Math.round(fs * 1.75);
       c.font = '600 ' + fs + 'px ' + vfont;
       var lines = wrapCJK(c, v.text, CW - 280);
+      // 平均每行長度，避免最後一行只剩一兩個字
+      if (lines.length > 1) {
+        var even = c.measureText(v.text).width / lines.length * 1.06 + fs;
+        var balanced = wrapCJK(c, v.text, Math.min(CW - 280, even));
+        if (balanced.length === lines.length) lines = balanced;
+      }
       var blockH = (lines.length - 1) * lhgt;
       var centerY = 930;
       var yy = centerY - blockH / 2 + fs * 0.35;
@@ -415,6 +421,21 @@
 
   function fileName() { return '進到水深之處_' + state.verse.ref.replace(/\s+/g, '') + '.png'; }
   var inApp = /Line\/|FBAN|FBAV|Instagram|MicroMessenger/i.test(navigator.userAgent);
+  var inLine = /Line\//i.test(navigator.userAgent);
+
+  // 從 LINE 跳到外部瀏覽器時帶上這一則經文，外部瀏覽器沿用同一則，不會變成重抽
+  function externalUrl() {
+    return location.origin + '/?openExternalBrowser=1&v=' + state.verse.id;
+  }
+
+  function blobToDataUrl(blob) {
+    return new Promise(function (res, rej) {
+      var fr = new FileReader();
+      fr.onload = function () { res(fr.result); };
+      fr.onerror = rej;
+      fr.readAsDataURL(blob);
+    });
+  }
 
   function onSave() {
     if (!state.verse) return;
@@ -423,13 +444,19 @@
     el.save.lastChild.textContent = ' 產生圖卡中⋯';
     wallpaperBlob().then(function (blob) {
       var url = URL.createObjectURL(blob);
+      // App 內建瀏覽器長按 blob 圖片常常存不了，改用 data URL
+      return (inApp ? blobToDataUrl(blob) : Promise.resolve(url)).then(function (src) { return { url: url, src: src }; });
+    }).then(function (r) {
+      var url = r.url;
       var img = new Image();
-      img.className = 'save-img'; img.alt = '你的新年祝福經文圖卡'; img.src = url;
+      img.className = 'save-img'; img.alt = '你的新年祝福經文圖卡'; img.src = r.src;
       el.modalFrame.replaceChildren(img);
+      el.external.hidden = !inApp;
+      if (inApp) el.external.href = externalUrl();
       el.modal.hidden = false;
       el.modalClose.focus();
       el.modalHint.innerHTML = inApp
-        ? '祝福圖卡已產生！<br>請「長按下方圖片」儲存到相簿'
+        ? '請「長按下方圖片」儲存到相簿<br>存不了的話，請按下方按鈕改用瀏覽器開啟'
         : '祝福圖卡已下載！<br>手機上也可以「長按下方圖片」儲存到相簿';
       if (!inApp) {
         var a = document.createElement('a');
@@ -469,6 +496,11 @@
   function onShare() {
     if (!state.verse) return;
     var text = verseMessage();
+    // LINE 內建瀏覽器沒有系統分享，直接打開 LINE 的分享選單
+    if (inLine) {
+      location.href = 'https://line.me/R/share?text=' + encodeURIComponent(text + '\n' + location.origin);
+      return;
+    }
     if (!navigator.share) { onCopy(); return; }
     el.share.disabled = true;
     wallpaperBlob().then(function (blob) {
@@ -500,6 +532,22 @@
       state.settings = s;
       applyTestFlag();
       var saved = s.testMode ? null : readSaved();
+      var params = new URLSearchParams(location.search);
+      var passed = parseInt(params.get('v'), 10);
+      if (params.has('v') || params.has('openExternalBrowser')) history.replaceState(null, '', '/');
+      if (!saved && !s.testMode && passed > 0) {
+        // 從 LINE 帶過來的經文：這個瀏覽器還沒抽過，就沿用同一則
+        loadVerses().then(function (list) {
+          var hit = list.filter(function (x) { return x.id === passed; })[0];
+          if (hit) {
+            var v = { id: hit.id, ref: hit.ref, text: hit.text };
+            writeSaved(v);
+            loadVerseFont(v.id).then(function () { showResult(v, true); });
+          } else if (!s.open) { showClosed(); }
+          else { show('cover'); }
+        }).catch(function () { show('cover'); });
+        return;
+      }
       if (saved) {
         // 等經文字型（最多 1.2 秒）再展開，避免字型替換時跳動
         var ready = loadVerseFont(saved.id);

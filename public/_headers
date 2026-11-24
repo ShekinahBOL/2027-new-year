@@ -1,0 +1,21 @@
+# 字型與圖片內容固定，長快取
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*
+  Cache-Control: public, max-age=86400
+
+# 經文與程式：短快取，改版後很快生效
+/config/*
+  Cache-Control: public, max-age=300
+/js/*
+  Cache-Control: public, max-age=300
+/css/*
+  Cache-Control: public, max-age=300
+
+/admin/*
+  Cache-Control: no-store
+  X-Robots-Tag: noindex
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

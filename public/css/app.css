@@ -1,0 +1,435 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg-page);
+  font-family: var(--font-sans);
+  color: var(--cream);
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+::selection { background: var(--gold); color: var(--bg-abyss); }
+
+img { display: block; max-width: 100%; }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ───────── 外框 ───────── */
+.app-shell {
+  width: 100%; height: 100dvh;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, #0c2747 0%, #020812 100%);
+}
+
+.phone-stage {
+  position: relative;
+  width: 100%; max-width: 430px;
+  height: 100dvh; max-height: 920px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #04152b 0%, #0a2d52 52%, #15578a 100%);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .85), 0 0 0 1px rgba(244, 208, 63, .18);
+}
+
+@media (min-width: 480px) {
+  .phone-stage {
+    height: 94dvh; border-radius: 36px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .9), 0 0 0 2px rgba(244, 208, 63, .25);
+  }
+}
+
+.ocean { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+.dawn-flash {
+  position: absolute; inset: 0; z-index: 40; pointer-events: none;
+  background: radial-gradient(circle at 50% 40%, #fffdf7 0%, rgba(255, 244, 200, .95) 28%, rgba(244, 208, 63, .6) 55%, rgba(244, 208, 63, 0) 88%);
+  mix-blend-mode: screen;
+  opacity: 0; transition: opacity .45s cubic-bezier(.4, 0, .2, 1);
+}
+.dawn-flash.is-on { opacity: .96; }
+
+/* ───────── 場景 ───────── */
+.screen {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: max(env(safe-area-inset-top), 20px) 22px max(env(safe-area-inset-bottom), 24px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  /* 離開比進來快：舊畫面 0.2 秒淡出，新畫面稍後才進來，不會疊影 */
+  transition: opacity .2s ease, visibility 0s linear .2s;
+}
+.screen.is-active { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .5s ease .14s, visibility 0s; }
+
+/* ───────── 首頁 ───────── */
+.cover-top { width: 100%; display: flex; justify-content: center; margin-top: 1.5vh; }
+
+.logo-card {
+  background: #fff; border-radius: 16px; padding: 9px 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+.logo-card img { height: 40px; width: auto; }
+.logo-white { width: min(64%, 240px); height: auto; filter: drop-shadow(0 2px 8px rgba(0, 0, 0, .35)); }
+
+.cover-center { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.screen.is-entering .cover-top,
+.screen.is-entering .cover-center > *,
+.screen.is-entering .cover-bottom { animation: fade-up .7s cubic-bezier(.16, 1, .3, 1) backwards; }
+.screen.is-entering .cover-center > :nth-child(1) { animation-delay: .08s; }
+.screen.is-entering .cover-center > :nth-child(2) { animation-delay: .16s; }
+.screen.is-entering .cover-center > :nth-child(3) { animation-delay: .22s; }
+.screen.is-entering .cover-center > :nth-child(4) { animation-delay: .28s; }
+.screen.is-entering .cover-center > :nth-child(5) { animation-delay: .34s; }
+.screen.is-entering .cover-bottom { animation-delay: .44s; }
+
+.anchor-emblem {
+  width: 92px; height: 92px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: radial-gradient(circle, rgba(244, 208, 63, .16) 0%, rgba(7, 34, 64, .55) 72%);
+  border: 1px solid rgba(244, 208, 63, .38);
+  box-shadow: 0 0 32px rgba(25, 100, 153, .5);
+  margin-bottom: 18px;
+  animation: bob-slow 4s ease-in-out infinite;
+}
+
+.event-subtitle {
+  font-family: var(--font-serif); font-weight: 600;
+  font-size: var(--fs-label); letter-spacing: .2em; padding-left: .2em;
+  color: var(--gold); margin-bottom: 10px;
+}
+
+.event-title {
+  font-family: var(--font-serif); font-weight: 900;
+  font-size: var(--fs-display); line-height: 1.2;
+  letter-spacing: .14em; padding-left: .14em;
+  text-wrap: balance;
+  color: var(--cream);
+  text-shadow: 0 2px 0 rgba(201, 158, 16, .55), 0 6px 18px rgba(0, 0, 0, .45);
+  margin-bottom: 12px;
+}
+
+.event-tagline { font-size: var(--fs-body); letter-spacing: .12em; color: rgba(255, 253, 247, .84); margin-bottom: 22px; }
+
+.theme-verse {
+  padding: 13px 20px; border-radius: 16px;
+  background: rgba(3, 17, 34, .55);
+  border: 1px solid rgba(244, 208, 63, .25);
+  font-family: var(--font-serif); font-weight: 600;
+  font-size: var(--fs-quote); line-height: 1.7; letter-spacing: .06em;
+  color: var(--gold-light);
+  text-wrap: balance;
+}
+.theme-verse .phrase { display: inline-block; }
+.theme-verse cite { display: block; margin-top: 2px; font-style: normal; font-size: var(--fs-caption); letter-spacing: .1em; color: var(--gold); }
+
+.cover-bottom { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 2vh; }
+.cover-hint { font-size: var(--fs-body); letter-spacing: .06em; color: rgba(255, 253, 247, .9); }
+
+/* ───────── 按鈕 ───────── */
+.btn-gold, .btn-navy, .btn-replay, .btn-close-modal, .deep-target { font: inherit; border: 0; cursor: pointer; touch-action: manipulation; }
+
+.btn-gold {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: linear-gradient(135deg, var(--gold-button-top) 0%, var(--gold) 50%, var(--gold-button-bottom) 100%);
+  color: #04152b;
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, .55), inset 0 1px 1px rgba(255, 255, 255, .75);
+  transition: transform .16s ease, filter .2s;
+}
+.btn-gold:hover { filter: brightness(1.06); }
+.btn-gold:active { transform: scale(.96); }
+
+.btn-enter {
+  width: 100%; max-width: 310px; min-height: 62px;
+  padding: 0 24px; border-radius: 999px;
+  font-family: var(--font-serif); font-weight: 600;
+  font-size: var(--fs-action-hero); letter-spacing: .12em;
+}
+
+.btn-gold:focus-visible, .btn-navy:focus-visible, .btn-replay:focus-visible, .btn-close-modal:focus-visible, .deep-target:focus-visible {
+  outline: 2px solid var(--gold-light); outline-offset: 3px;
+}
+.btn-gold[disabled], .btn-navy[disabled] { opacity: .6; cursor: progress; }
+
+/* ───────── 划船 ───────── */
+.sail-hud { width: 100%; z-index: 20; pointer-events: none; margin-top: 1vh; }
+
+.depth-panel {
+  max-width: 330px; margin: 0 auto; padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(3, 17, 34, .72);
+  border: 1px solid rgba(244, 208, 63, .3);
+}
+.depth-stage { text-align: center; font-family: var(--font-serif); font-weight: 600; font-size: var(--fs-label); letter-spacing: .14em; color: var(--gold); margin-bottom: 9px; }
+
+.progress-track { height: 4px; border-radius: 999px; background: rgba(255, 255, 255, .14); overflow: hidden; }
+.progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, rgba(244, 208, 63, .55) 0%, var(--gold) 100%); transition: width .08s linear; }
+
+.deep-target {
+  position: absolute; top: 17%; left: 50%; transform: translateX(-50%);
+  width: 150px; height: 150px; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: none; z-index: 22;
+}
+.target-ring { position: absolute; inset: 6px; border-radius: 50%; border: 1.5px dashed rgba(244, 208, 63, .5); animation: spin-slow 20s linear infinite; }
+.target-core {
+  width: 66px; height: 66px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: radial-gradient(circle, rgba(244, 208, 63, .35) 0%, rgba(244, 208, 63, .03) 72%);
+  border: 1px solid rgba(244, 208, 63, .45);
+  animation: pulse-ring 2.4s ease-in-out infinite;
+}
+.target-label { margin-top: 8px; font-family: var(--font-serif); font-weight: 600; font-size: var(--fs-caption); letter-spacing: .16em; color: var(--gold-light); text-shadow: 0 2px 8px rgba(0, 0, 0, .85); }
+
+.drag-surface { position: absolute; inset: 0; z-index: 18; touch-action: none; cursor: grab; }
+
+.boat {
+  position: absolute; left: 50%; bottom: 14%;
+  width: 112px; height: 148px;
+  transform: translateX(-50%);
+  display: grid; place-items: center;
+  z-index: 25; touch-action: none; cursor: grab;
+  opacity: 0; translate: 0 48px;
+  transition: opacity .35s ease, translate .8s cubic-bezier(.16, 1, .3, 1);
+}
+.boat:not(.is-visible) { pointer-events: none; }
+.boat.is-visible { opacity: 1; translate: 0 0; transition-delay: .14s; }
+.boat.is-fading { opacity: 0; transition-duration: .5s; }
+.boat-bob { position: relative; animation: boat-bob 2.6s ease-in-out infinite; }
+.lantern-halo {
+  position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
+  width: 74px; height: 74px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 226, 110, .72) 0%, rgba(244, 208, 63, 0) 72%);
+  pointer-events: none;
+}
+
+.sail-hint {
+  position: absolute; bottom: 4.5%; left: 50%; transform: translateX(-50%);
+  width: 92%; z-index: 21;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  pointer-events: none; transition: opacity .25s;
+}
+.chevrons { display: flex; flex-direction: column; align-items: center; line-height: .55; color: var(--gold); animation: arrow-rise 1.5s infinite; }
+.hint-pill {
+  padding: 9px 18px; border-radius: 999px;
+  font-size: var(--fs-body); font-weight: 500; letter-spacing: .06em; text-align: center;
+  background: rgba(3, 17, 34, .8);
+  border: 1px solid rgba(244, 208, 63, .35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .45);
+}
+
+/* ───────── 下網 ───────── */
+.screen-fishing { justify-content: center; pointer-events: none !important; }
+.fishing-pill {
+  margin-top: 46vh;
+  padding: 13px 26px; border-radius: 999px;
+  background: rgba(3, 17, 34, .8);
+  border: 1px solid rgba(244, 208, 63, .45);
+  font-family: var(--font-serif); font-weight: 600;
+  font-size: var(--fs-label); letter-spacing: .14em;
+  color: var(--gold-light);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+  transition: opacity .18s ease;
+}
+
+/* ───────── 經文卡 ───────── */
+.screen-result { justify-content: center; gap: 16px; padding-top: max(env(safe-area-inset-top), 18px); padding-bottom: max(env(safe-area-inset-bottom), 18px); overflow-y: auto; }
+
+.blessing-card {
+  position: relative; width: 100%;
+  flex: 0 1 auto; min-height: 0;
+  padding: clamp(22px, 3.4vh, 30px) clamp(18px, 5vw, 26px) clamp(18px, 2.6vh, 22px);
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(244, 208, 63, .16) 0%, rgba(244, 208, 63, 0) 60%),
+    linear-gradient(165deg, var(--bg-card-top) 0%, #04132a 55%, var(--bg-card-bottom) 100%);
+  border: 1.5px solid rgba(244, 208, 63, .6);
+  box-shadow: inset 0 0 30px rgba(244, 208, 63, .1);
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 14px;
+  min-height: min(52dvh, 500px);
+  text-align: center;
+}
+.card-shell { position: relative; width: 100%; flex: 0 1 auto; min-height: 0; display: flex; }
+/* 外陰影放在殼上，不跟著經文卡的展開遮罩被切出硬邊 */
+.card-shell::before {
+  content: ''; position: absolute; inset: 0; border-radius: 24px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, .7); pointer-events: none;
+}
+.screen-result.is-revealing .card-shell::before { animation: fade-only .5s .8s ease backwards; }
+.blessing-card::before {
+  content: ''; position: absolute; inset: 8px; border-radius: 17px;
+  border: 1px solid rgba(244, 208, 63, .26); pointer-events: none;
+}
+
+.card-header { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.card-tag { font-size: var(--fs-caption); font-weight: 600; letter-spacing: .06em; line-height: 1.5; color: var(--gold); text-wrap: balance; }
+.card-ornament { display: flex; align-items: center; gap: 8px; color: rgba(244, 208, 63, .7); font-size: 11px; font-style: normal; }
+.card-ornament span { width: 40px; height: 1px; background: linear-gradient(90deg, transparent, rgba(244, 208, 63, .7), transparent); }
+.card-ornament i { font-style: normal; }
+
+.card-body { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 6px 0; }
+
+.scripture {
+  font-family: var(--font-serif); font-weight: 600;
+  font-size: var(--fs-scripture); line-height: 1.8; letter-spacing: .05em;
+  color: var(--cream);
+  line-break: strict;
+  text-wrap: pretty;
+}
+.scripture.is-medium { font-size: var(--fs-scripture-m); line-height: 1.74; letter-spacing: .03em; }
+.scripture.is-long { font-size: var(--fs-scripture-l); line-height: 1.66; letter-spacing: .01em; }
+
+.scripture-ref {
+  margin-top: 18px; padding: 5px 18px; border-radius: 999px;
+  background: rgba(244, 208, 63, .14);
+  border: 1px solid rgba(244, 208, 63, .45);
+  font-family: var(--font-serif); font-weight: 600;
+  font-size: var(--fs-label); letter-spacing: .08em;
+  color: var(--gold);
+}
+
+.card-footer { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.mark-badge img { width: 100%; height: 100%; object-fit: contain; }
+.mark-badge { width: 36px; height: 36px; border-radius: 50%; background: #fff; display: grid; place-items: center; padding: 4px; box-shadow: 0 3px 10px rgba(0, 0, 0, .35); }
+.card-blessing { font-size: var(--fs-body); letter-spacing: .1em; color: rgba(255, 253, 247, .9); }
+
+/* 領受的儀式：光從船的位置展開成經文卡 → 金色內框 → 經文對焦 → 出處 → 祝福 → 按鈕 */
+.screen-result.is-revealing .blessing-card { animation: card-open 1.05s cubic-bezier(.45, .05, .25, 1) backwards; }
+.screen-result.is-revealing .card-shell { position: relative; width: 100%; flex: 0 1 auto; min-height: 0; display: flex; }
+/* 外陰影放在殼上，不跟著經文卡的展開遮罩被切出硬邊 */
+.card-shell::before {
+  content: ''; position: absolute; inset: 0; border-radius: 24px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, .7); pointer-events: none;
+}
+.screen-result.is-revealing .card-shell::before { animation: fade-only .5s .8s ease backwards; }
+.blessing-card::before { animation: frame-in .7s .45s ease backwards; }
+.screen-result.is-revealing .card-header { animation: fade-up .6s .35s ease both; }
+.screen-result.is-revealing .scripture { animation: verse-in 1s .55s cubic-bezier(.16, 1, .3, 1) both; }
+.screen-result.is-revealing .scripture-ref { animation: fade-up .6s 1.15s ease both; }
+.screen-result.is-revealing .card-footer { animation: fade-up .6s 1.35s ease both; }
+.screen-result.is-revealing .result-actions { animation: fade-up .6s 1.55s ease both; }
+
+.result-actions { width: 100%; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+.btn-action { min-height: 50px; padding: 0 12px; border-radius: 14px; font-size: var(--fs-action); font-weight: 600; letter-spacing: .05em; gap: 7px; }
+.btn-action.btn-gold { min-height: 54px; font-size: 17px; }
+.action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-navy {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(8, 32, 60, .92);
+  border: 1px solid rgba(244, 208, 63, .48);
+  color: var(--gold-light);
+  transition: transform .16s ease, border-color .2s;
+}
+.btn-navy:hover { border-color: var(--gold); }
+.btn-navy:active { transform: scale(.96); }
+
+.btn-replay {
+  align-self: center;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0 16px; border-radius: 999px;
+  background: rgba(3, 17, 34, .6);
+  color: var(--gold-light);
+  font-size: var(--fs-body); letter-spacing: .08em;
+}
+
+/* ───────── 尚未開放 ───────── */
+.closed-box {
+  margin-top: 8px; padding: 18px 22px; border-radius: 18px;
+  background: rgba(3, 17, 34, .62);
+  border: 1px solid rgba(244, 208, 63, .3);
+  max-width: 320px;
+}
+.closed-message { font-size: var(--fs-quote); text-wrap: balance; line-height: 1.7; color: var(--cream); white-space: pre-line; }
+.closed-note { margin-top: 10px; font-size: var(--fs-caption); color: var(--cream-muted); }
+
+/* ───────── 測試模式 ───────── */
+.test-flag {
+  position: absolute; z-index: 60;
+  top: max(env(safe-area-inset-top), 6px); left: 50%; transform: translateX(-50%);
+  padding: 4px 10px; border-radius: 6px;
+  font-size: var(--fs-caption); font-weight: 700; letter-spacing: .02em; white-space: nowrap;
+  background: #ffd9d4; color: #7a1408;
+}
+.test-flag:not([hidden]) ~ .screen .cover-top { margin-top: 30px; }
+.test-flag:not([hidden]) ~ .screen-result { padding-top: 40px; }
+
+/* ───────── 提示與彈窗 ───────── */
+.toast {
+  position: absolute; top: 22px; left: 50%; z-index: 100;
+  transform: translate(-50%, -16px);
+  padding: 10px 20px; border-radius: 999px;
+  background: rgba(244, 208, 63, .97); color: #04152b;
+  font-size: var(--fs-caption); font-weight: 700; letter-spacing: .04em; white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  opacity: 0; pointer-events: none;
+  transition: opacity .28s ease, transform .28s ease;
+}
+.toast.is-shown { opacity: 1; transform: translate(-50%, 0); }
+
+.save-modal {
+  position: absolute; inset: 0; z-index: 90;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(2, 10, 22, .985);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.save-modal[hidden] { display: none; }
+.save-hint { font-size: var(--fs-body); line-height: 1.6; text-align: center; color: var(--gold-light); margin-bottom: 12px; font-weight: 500; }
+.save-frame { display: contents; }
+.save-img {
+  max-height: 66dvh; max-width: 84%;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .85);
+  -webkit-touch-callout: default; user-select: auto; -webkit-user-select: auto;
+}
+.btn-close-modal {
+  margin-top: 16px; padding: 12px 30px; border-radius: 999px;
+  border: 1px solid rgba(255, 253, 247, .38);
+  background: rgba(255, 255, 255, .12); color: var(--cream);
+  font-size: var(--fs-body);
+}
+
+/* ───────── 動畫 ───────── */
+@keyframes bob-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes boat-bob { 0%, 100% { transform: rotate(-1.8deg) translateY(0); } 50% { transform: rotate(1.8deg) translateY(-4px); } }
+@keyframes arrow-rise { 0% { transform: translateY(6px); opacity: .3; } 50% { transform: translateY(-4px); opacity: 1; } 100% { transform: translateY(-10px); opacity: .2; } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes pulse-ring { 0%, 100% { transform: scale(.95); opacity: .85; } 50% { transform: scale(1.08); opacity: 1; } }
+@keyframes card-open {
+  from { opacity: .4; clip-path: circle(0 at var(--rise-x, 50%) var(--rise-y, 0%)); transform: translateY(14px); }
+  to { opacity: 1; clip-path: circle(125% at var(--rise-x, 50%) var(--rise-y, 0%)); transform: none; }
+}
+@keyframes frame-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes verse-in { from { opacity: 0; filter: blur(8px); transform: translateY(8px); } to { opacity: 1; filter: blur(0); transform: none; } }
+
+@media (max-height: 680px) {
+  .anchor-emblem { width: 70px; height: 70px; margin-bottom: 10px; }
+  .anchor-emblem svg { width: 38px; height: 38px; }
+  .event-title { font-size: 34px; }
+  .event-tagline { margin-bottom: 12px; }
+  .blessing-card { gap: 8px; }
+  .btn-action { min-height: 46px; }
+  .btn-action.btn-gold { min-height: 48px; }
+  .result-actions { gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anchor-emblem, .boat-bob, .chevrons, .target-ring, .target-core { animation: none; }
+  .boat { translate: 0 0; }
+  .screen.is-entering .cover-top, .screen.is-entering .cover-center > *, .screen.is-entering .cover-bottom { animation: none; }
+  /* 減少動態：只保留淡入，不移動、不模糊、不展開 */
+  .screen-result.is-revealing .blessing-card { animation: fade-only .4s ease backwards; }
+  .screen-result.is-revealing .card-shell { position: relative; width: 100%; flex: 0 1 auto; min-height: 0; display: flex; }
+/* 外陰影放在殼上，不跟著經文卡的展開遮罩被切出硬邊 */
+.card-shell::before {
+  content: ''; position: absolute; inset: 0; border-radius: 24px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, .7); pointer-events: none;
+}
+.screen-result.is-revealing .card-shell::before { animation: fade-only .5s .8s ease backwards; }
+.blessing-card::before { animation: none; }
+  .screen-result.is-revealing .card-header,
+  .screen-result.is-revealing .scripture,
+  .screen-result.is-revealing .scripture-ref,
+  .screen-result.is-revealing .card-footer,
+  .screen-result.is-revealing .result-actions { animation: fade-only .4s .15s ease both; }
+}
+@keyframes fade-only { from { opacity: 0; } to { opacity: 1; } }

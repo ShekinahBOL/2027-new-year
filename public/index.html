@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>進到水深之處｜2026-2027跨年禱告會</title>
+  <meta name="description" content="夏凱納靈糧堂 2026-2027 跨年禱告會：把船開到水深之處，領受一則新年祝福經文。">
+  <meta name="theme-color" content="#031122">
+  <meta property="og:title" content="進到水深之處｜2026-2027跨年禱告會">
+  <meta property="og:description" content="把船開到水深之處，領受一則新年祝福經文。">
+  <meta property="og:image" content="/assets/icon-512.png">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preload" href="/fonts/ui-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/ui-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/config/verses.json" as="fetch" crossorigin>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <main class="phone-stage" id="stage">
+      <canvas id="ocean" class="ocean" aria-hidden="true"></canvas>
+      <div class="dawn-flash" id="dawnFlash" aria-hidden="true"></div>
+      <span class="test-flag" id="testFlag" hidden>測試模式：每次重新抽，結果不保存</span>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+      <!-- 第一幕：首頁 -->
+      <section class="screen" id="screenCover" aria-labelledby="coverTitle">
+        <header class="cover-top">
+          <img class="logo-white" src="/assets/logo-full-white.png" width="900" height="237" alt="夏凱納靈糧堂 Shekinah Bread of Life Christian Church">
+        </header>
+
+        <div class="cover-center">
+          <div class="anchor-emblem" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="14" r="4.5" stroke="#F4D03F" stroke-width="2.5"/>
+              <path d="M32 18.5V50" stroke="#F4D03F" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M22 26H42" stroke="#F4D03F" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M14 38C14 46.5 22 51 32 51C42 51 50 46.5 50 38" stroke="#FFFDF7" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M11 41L14 37L18 40" stroke="#FFFDF7" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M53 41L50 37L46 40" stroke="#FFFDF7" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 56C17 53 24 58 32 55C40 52 47 57 54 54" stroke="#5DADE2" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+            </svg>
+          </div>
+          <p class="event-subtitle">2026-2027跨年禱告會</p>
+          <h1 class="event-title" id="coverTitle">進到水深之處</h1>
+          <p class="event-tagline">憑信啟航・領受新年祝福經文</p>
+          <blockquote class="theme-verse">
+            <span class="phrase">「把船開到水深之處，</span><span class="phrase">下網打魚。」</span>
+            <cite>— 路加福音 5:4</cite>
+          </blockquote>
+        </div>
+
+        <footer class="cover-bottom">
+          <button class="btn-gold btn-enter" id="btnStart" type="button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 20a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2-1a2.4 2.4 0 0 1 2-1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2-1a2.4 2.4 0 0 1 2-1a2.4 2.4 0 0 1 2 1a2.4 2.4 0 0 0 2 1a2.4 2.4 0 0 0 2-1"/>
+              <path d="M4 18l-1-3h18l-1 3"/><path d="M12 2v13"/><path d="M12 3l7 9h-7"/>
+            </svg>
+            啟航領受經文
+          </button>
+          <p class="cover-hint">點一下開始，把小船划到水深之處</p>
+        </footer>
+      </section>
+
+      <!-- 第二幕：划船進到水深之處 -->
+      <section class="screen" id="screenSail" aria-label="划船進到水深之處">
+        <div class="sail-hud">
+          <div class="depth-panel">
+            <p class="depth-stage" id="stageLabel">淺灘・預備啟航</p>
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          </div>
+        </div>
+
+        <button class="deep-target" id="deepTarget" type="button" aria-label="點一下，自動划到水深之處">
+          <span class="target-ring" aria-hidden="true"></span>
+          <span class="target-core" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F4D03F" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/></svg>
+          </span>
+          <span class="target-label">水深之處</span>
+        </button>
+
+        <div class="drag-surface" id="dragSurface"></div>
+
+        <div class="sail-hint" id="sailHint">
+          <div class="chevrons" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+          </div>
+          <p class="hint-pill" id="hintText">按住小船往上划（或點一下水深之處）</p>
+        </div>
+      </section>
+
+      <!-- 小船：划船與下網兩幕共用，留在最外層，下網時不會跟著場景淡出 -->
+      <div class="boat" id="boat" aria-hidden="true">
+        <div class="boat-bob">
+          <div class="lantern-halo" id="lanternHalo"></div>
+          <svg width="96" height="136" viewBox="0 0 96 136" fill="none">
+            <g id="oarLeft">
+              <line x1="30" y1="68" x2="6" y2="82" stroke="#D4AC0D" stroke-width="3" stroke-linecap="round"/>
+              <ellipse cx="6" cy="82" rx="5" ry="2.5" transform="rotate(-30 6 82)" fill="#F4D03F"/>
+            </g>
+            <g id="oarRight">
+              <line x1="66" y1="68" x2="90" y2="82" stroke="#D4AC0D" stroke-width="3" stroke-linecap="round"/>
+              <ellipse cx="90" cy="82" rx="5" ry="2.5" transform="rotate(30 90 82)" fill="#F4D03F"/>
+            </g>
+            <path d="M48 12C64 32 70 64 66 106C65 114 58 120 48 120C38 120 31 114 30 106C26 64 32 32 48 12Z" fill="rgba(0,0,0,0.45)" transform="translate(0, 4)"/>
+            <path d="M48 10C64 30 70 62 66 104C65 112 58 118 48 118C38 118 31 112 30 104C26 62 32 30 48 10Z" fill="url(#woodHull)" stroke="#F4D03F" stroke-width="2"/>
+            <path d="M48 19C60 35 64 63 61 100C60 106 55 110 48 110C41 110 36 106 35 100C32 63 36 35 48 19Z" fill="#3E2212"/>
+            <rect x="35" y="46" width="26" height="6" rx="2" fill="#8C5327"/>
+            <rect x="33" y="68" width="30" height="7" rx="2" fill="#9E5E2D"/>
+            <rect x="35" y="90" width="26" height="6" rx="2" fill="#8C5327"/>
+            <circle cx="48" cy="31" r="7" fill="rgba(244, 208, 63, 0.35)"/>
+            <circle cx="48" cy="31" r="4" fill="#FFFDF7" stroke="#F4D03F" stroke-width="1.5"/>
+            <defs>
+              <linearGradient id="woodHull" x1="48" y1="10" x2="48" y2="118" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#A05A2C"/>
+                <stop offset="50%" stop-color="#783F1D"/>
+                <stop offset="100%" stop-color="#522911"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 第三幕：下網 -->
+      <section class="screen screen-fishing" id="screenFishing" aria-live="polite">
+        <p class="fishing-pill" id="fishingText">在水深之處下網⋯</p>
+      </section>
+
+      <!-- 第四幕：祝福經文卡 -->
+      <section class="screen screen-result" id="screenResult" aria-labelledby="resultHeading">
+        <h2 class="visually-hidden" id="resultHeading">你的新年祝福經文</h2>
+        <div class="card-shell">
+        <article class="blessing-card" id="blessingCard">
+          <header class="card-header">
+            <span class="card-tag">2026-2027 跨年禱告會・進到水深之處</span>
+            <div class="card-ornament" aria-hidden="true"><span></span><i>❖</i><span></span></div>
+          </header>
+          <div class="card-body">
+            <p class="scripture" id="verseText"></p>
+            <p class="scripture-ref" id="verseRef"></p>
+          </div>
+          <footer class="card-footer">
+            <span class="mark-badge"><img src="/assets/logo-mark.png" width="256" height="256" alt=""></span>
+            <span class="card-blessing">願神在 2027 新的一年賜福與你</span>
+          </footer>
+        </article>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-gold btn-action" id="btnSave" type="button">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            儲存祝福圖卡
+          </button>
+          <div class="action-row">
+            <button class="btn-navy btn-action" id="btnShare" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4M6 12v7h12v-7"/></svg>
+              分享
+            </button>
+            <button class="btn-navy btn-action" id="btnCopy" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              複製經文
+            </button>
+          </div>
+          <button class="btn-replay" id="btnReplay" type="button">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            再看一次航行
+          </button>
+        </div>
+      </section>
+
+      <!-- 尚未開放 -->
+      <section class="screen" id="screenClosed" aria-labelledby="closedTitle">
+        <header class="cover-top">
+          <img class="logo-white" src="/assets/logo-full-white.png" width="900" height="237" alt="夏凱納靈糧堂 Shekinah Bread of Life Christian Church">
+        </header>
+        <div class="cover-center">
+          <p class="event-subtitle">2026-2027跨年禱告會</p>
+          <h1 class="event-title" id="closedTitle">進到水深之處</h1>
+          <div class="closed-box">
+            <p class="closed-message" id="closedMessage">禱告會倒數後開放領受經文，請稍候。</p>
+            <p class="closed-note">開放後這一頁會自動更新，不用重新整理</p>
+          </div>
+        </div>
+        <footer class="cover-bottom"></footer>
+      </section>
+
+      <!-- 圖卡預覽（長按儲存） -->
+      <div class="save-modal" id="saveModal" role="dialog" aria-modal="true" aria-labelledby="saveHint" hidden>
+        <p class="save-hint" id="saveHint">祝福圖卡已產生！<br>若沒有自動下載，請「長按下方圖片」儲存到相簿</p>
+        <div class="save-frame" id="saveFrame"></div>
+        <button class="btn-close-modal" id="btnCloseModal" type="button">返回經文卡</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/ocean.js" defer></script>
+  <script src="/js/app.js" defer></script>
+</body>
+</html>

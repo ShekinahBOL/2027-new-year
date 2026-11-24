@@ -1,0 +1,59 @@
+/*
+  主題設定：換主視覺時，改這個檔案的顏色與字型，以及 /assets 裡的圖片。
+  夜海畫布（js/ocean.js）也會讀取 --sea-* 與 --gold 顏色（請維持 #RRGGBB 格式）。
+*/
+
+@font-face {
+  font-family: "Deep Serif";
+  src: url("/fonts/ui-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Deep Serif";
+  src: url("/fonts/ui-900.woff2") format("woff2");
+  font-weight: 900;
+  font-display: swap;
+}
+
+:root {
+  /* 夜海：淺 → 深（航行越深，畫面越往深色移動） */
+  --sea-top-shallow: #082644;
+  --sea-mid-shallow: #104370;
+  --sea-bottom-shallow: #1e78b5;
+  --sea-top-deep: #031122;
+  --sea-mid-deep: #072447;
+  --sea-bottom-deep: #0c3663;
+
+  --bg-page: #020914;
+  --bg-abyss: #031122;
+  --bg-deep: #072240;
+  --bg-card-top: #0a2647;
+  --bg-card-bottom: #0f345c;
+
+  /* 金光 */
+  --gold: #f4d03f;
+  --gold-light: #fcf3cf;
+  --gold-dark: #c99e10;
+  --gold-button-top: #f9e076;
+  --gold-button-bottom: #d4ac0d;
+
+  --cream: #fffdf7;
+  --cream-muted: rgba(255, 253, 247, 0.78);
+
+  /* 字級角色（為長輩設計：介面最小 14px，經文最小 18px） */
+  --fs-display: clamp(36px, 10vw, 44px);   /* 主標「進到水深之處」 */
+  --fs-scripture: clamp(20px, 5.6vw, 23px);/* 經文（短） */
+  --fs-scripture-m: clamp(19px, 5.2vw, 21px);
+  --fs-scripture-l: clamp(18px, 4.9vw, 19.5px);
+  --fs-quote: 18px;                        /* 主題經文、關閉訊息 */
+  --fs-label: 16px;                        /* 金色宋體標示：活動名、階段、下網字幕、出處 */
+  --fs-action: 16px;                       /* 結果頁按鈕 */
+  --fs-action-hero: 19px;                  /* 首頁啟航按鈕 */
+  --fs-body: 15px;                         /* 說明、提示 */
+  --fs-caption: 14px;                      /* 出處署名、卡片抬頭等最小字 */
+
+  --font-serif: "Deep Serif", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+}

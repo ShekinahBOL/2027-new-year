@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>控制台｜進到水深之處</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <main class="console">
+    <header class="console__head">
+      <div>
+        <h1>控制台</h1>
+        <p class="console__event">2026-2027跨年禱告會・進到水深之處</p>
+      </div>
+      <a class="console__link" href="/" target="_blank" rel="noopener">打開前台</a>
+    </header>
+
+    <div class="alert alert--test" id="testAlert" hidden>
+      <strong>測試模式開啟中</strong>
+      所有人每次都會重新抽、結果不保存。正式開始前請記得關閉。
+    </div>
+
+    <p class="load-error" id="loadError" hidden></p>
+
+    <section class="panel" aria-labelledby="openHeading">
+      <div class="panel__row">
+        <div>
+          <h2 id="openHeading">前台</h2>
+          <p class="state" id="openState">讀取中⋯</p>
+        </div>
+        <button class="switch" id="openSwitch" type="button" role="switch" aria-checked="false" aria-labelledby="openHeading" disabled>
+          <span class="switch__knob"></span>
+        </button>
+      </div>
+      <p class="hint">按下後約 30～60 秒內，所有人的畫面才會跟著更新。已經抽過的人，前台關閉時仍看得到自己的經文。</p>
+    </section>
+
+    <section class="panel" aria-labelledby="msgHeading">
+      <h2 id="msgHeading"><label for="closedMessage">前台關閉時顯示的文字</label></h2>
+      <textarea id="closedMessage" rows="3" maxlength="200" disabled></textarea>
+      <div class="panel__row panel__row--end">
+        <span class="counter" id="msgCounter">0 / 200</span>
+        <button class="btn-admin" id="saveMessage" type="button" disabled>儲存文字</button>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="testHeading">
+      <div class="panel__row">
+        <div>
+          <h2 id="testHeading">測試模式（可重複抽）</h2>
+          <p class="state" id="testState">讀取中⋯</p>
+        </div>
+        <button class="switch switch--danger" id="testSwitch" type="button" role="switch" aria-checked="false" aria-labelledby="testHeading" disabled>
+          <span class="switch__knob"></span>
+        </button>
+      </div>
+      <p class="hint">彩排用。開啟時前台角落會顯示「測試模式」，每次都重新抽，抽到的結果不會保存；關閉後，每台裝置的下一次抽取才算正式結果。</p>
+    </section>
+
+    <footer class="console__foot" id="meta">尚未讀取設定</footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

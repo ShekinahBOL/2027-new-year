@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 # 只給本機開發用（npx wrangler pages dev public）。
 # 刻意不寫 pages_build_output_dir：有這一行的話，Cloudflare 會改用這個檔案當正式設定，
 # 忽略後台設定的 KV 綁定與環境變數。正式環境的設定一律在 Cloudflare 後台管理。
 name = "2027-new-year"
+=======
+# Cloudflare Pages 設定（本機開發與 wrangler 部署用）
+name = "deepwater-2027"
+>>>>>>> c7526b6c644918c12e424d424afc7338f228d097
 compatibility_date = "2026-11-01"
 
 [[kv_namespaces]]

@@ -52,7 +52,7 @@ tools/                  經文轉檔、字型子集工具
    - **正式（Production）和預覽（Preview）都要加。**
 3. 重新部署一次，讓綁定生效。
 
-如果也要用 wrangler 在本機或指令部署，把 KV 的 ID 填進 `wrangler.toml` 的 `id`。
+`wrangler.toml` 只給本機開發用，裡面刻意沒有 `pages_build_output_dir`；加上那一行，Cloudflare 就會改用這個檔案當正式設定，忽略後台的 KV 綁定與環境變數。
 
 ### 3. 用 Cloudflare Access 保護控制台
 
@@ -131,7 +131,7 @@ Pages 專案 → **Metrics** → 啟用 **Web Analytics**。
 
 ```bash
 cp .dev.vars.example .dev.vars          # 本機略過 Access 驗證
-npx wrangler pages dev                  # http://localhost:8788
+npx wrangler pages dev public           # http://localhost:8788
 ```
 
 本機的 KV 是模擬的，可以用以下指令改設定：
